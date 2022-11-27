@@ -60,7 +60,7 @@ def transform_image(image: np.ndarray, homography: np.ndarray) -> Tuple[np.ndarr
     des = des.reshape(des_shape)
     np.swapaxes(des, 0, 1)  # transform image into image-like coordinates
 
-    return des
+    return des, des_origin_offset
 
 
 if __name__ == '__main__':
@@ -85,6 +85,6 @@ if __name__ == '__main__':
         homography[1, 1] = cos(angle)
         # homography[2, 0] = i / 10000
         # homography[1, 2] = i * 5
-        des = transform_image(img, homography)
+        des, _ = transform_image(img, homography)
         cv2.imshow('transformed', des)
         cv2.waitKey(1)
