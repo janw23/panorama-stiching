@@ -16,6 +16,12 @@ def apply_homography(homography: np.ndarray, points: np.ndarray):
     ''' Applies homography transformation to points expressed in matrix-like coordinates. '''
     return swap_coordinates(rays_to_points(homography @ points_to_rays(swap_coordinates(points))))
 
+def compute_bounds_and_offset(xs: np.ndarray, ys: np.ndarray):
+    tl = (xs.min(), ys.min())
+    br = (xs.max(), ys.max())
+    bounds = (br[0] - tl[0], br[1] - tl[1])
+    return bounds, tl
+
 
 def transform_image(image: np.ndarray, homography: np.ndarray) -> Tuple[np.ndarray, Tuple[int, int]]:
     assert homography.shape == (3, 3)
@@ -29,13 +35,9 @@ def transform_image(image: np.ndarray, homography: np.ndarray) -> Tuple[np.ndarr
         [image.shape[0], image.shape[1]]]).T
     corners = apply_homography(homography, corners)
     xs, ys = np.rint(corners).astype(int)
-    tl = (xs.min(), ys.min())
-    br = (xs.max(), ys.max())
     des_shape = list(image.shape)
-    des_shape[0] = br[0] - tl[0]
-    des_shape[1] = br[1] - tl[1]
+    des_shape[:2], des_origin_offset = compute_bounds_and_offset(xs, ys)
     des_shape = tuple(des_shape)
-    des_origin_offset = tl
 
     # Using inverse homography, for each pixel in the transformed image
     # find pixel in the source image that is the source of its color value.
