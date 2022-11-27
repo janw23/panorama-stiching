@@ -3,7 +3,7 @@
 import numpy as np
 
 # This function implements 'Task 2'
-def transform_image(image: np.ndarray, homography: np.ndarray):
+def transform_image(image: np.ndarray, homography: np.ndarray) -> np.ndarray:
     ''' Applies projective transformation to the image.
         Provided homography matrix is assumed to be inversible.'''
     assert homography.shape == (3, 3)
