@@ -5,7 +5,7 @@ def compute_blending_weights(image: np.ndarray) -> np.ndarray:
     xs, ys = xs.astype(float), ys.astype(float)
     
     # Compute weigths based on distance from image edges.
-    weights = np.minimum(np.minimum(xs, image.shape[0] - xs), np.minimum(ys, image.shape[1] - ys))
+    weights = np.minimum(np.minimum(xs + 1, image.shape[0] - xs), np.minimum(ys + 1, image.shape[1] - ys))
 
     # Normalize to [0, 1] range.
     weights -= weights.min()
