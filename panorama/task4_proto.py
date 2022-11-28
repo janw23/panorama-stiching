@@ -60,45 +60,47 @@ def stich_images(adjustable_image: np.ndarray, fixed_image: np.ndarray, homograp
     trans_image_weights_full = np.expand_dims(trans_image_weights_full, 2)
     fixed_image_weights_full = np.expand_dims(fixed_image_weights_full, 2)
 
-    trans_image_full = trans_image_full.astype(float) * trans_image_weights_full
-    fixed_image_full = fixed_image_full.astype(float) * fixed_image_weights_full
-
     # Avoid zero division.
     both_zero = (trans_image_weights_full == 0) & (fixed_image_weights_full == 0)
     trans_image_weights_full[both_zero] = 1
     fixed_image_weights_full[both_zero] = 1
 
+    trans_image_full = trans_image_full.astype(float) * trans_image_weights_full
+    fixed_image_full = fixed_image_full.astype(float) * fixed_image_weights_full
     stiched_image = np.rint((trans_image_full + fixed_image_full) / (trans_image_weights_full + fixed_image_weights_full)).astype(fixed_image.dtype)
 
     # Transform image back into image-like coordinates.
     np.swapaxes(stiched_image, 0, 1)
     return stiched_image
 
+if __name__ == '__main__':
 
-img1 = cv2.imread('../lab3/captures_esp32/frame_10.png')
-img2 = cv2.imread('../lab3/captures_esp32/frame_11.png')
+    img1 = cv2.imread('mc1.png')
+    img2 = cv2.imread('mc2.png')
 
-img1_points = [
-    [194, 172],
-    [163, 517],
-    [748, 645],
-    [223, 834],
-    [768, 331],
-]
+    img1_points = [
+        (1034, 729),
+        (659, 1201),
+        (1769, 1252),
+        (2293, 1043),
+        (1516, 877),
+    ]
 
-img2_points = [
-    [543, 166],
-    [524, 496],
-    [1117, 612],
-    [611, 803],
-    [1133, 267],
-]
+    img2_points = [
+        (541, 518),
+        (34, 1127),
+        (1331, 979),
+        (1694, 776),
+        (1117, 674),
+    ]
 
-img1_points = np.array(img1_points).T
-img2_points = np.array(img2_points).T
+    img1_points = np.array(img1_points).T
+    img2_points = np.array(img2_points).T
 
-homography = find_homography(img2_points, img1_points)
+    homography = find_homography(img2_points, img1_points)
+    stiched_image = stich_images(img2, img1, homography)
 
-stiched_image = stich_images(img2, img1, homography)
-cv2.imshow('stiched', stiched_image)
-cv2.waitKey(0)
+    cv2.imwrite('stiched.png', stiched_image)
+
+    cv2.imshow('stiched', stiched_image)
+    cv2.waitKey(0)
