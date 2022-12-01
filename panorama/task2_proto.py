@@ -1,7 +1,7 @@
 # File for prototyping stuff
 from typing import Union, Tuple
 
-from task3_proto import points_to_rays, rays_to_points
+from .task3_proto import points_to_rays, rays_to_points
 
 import numpy as np
 

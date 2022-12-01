@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 # This function is heavily inspired by an OpenCV tutorial:
 # https://docs.opencv.org/4.6.0/dc/dc3/tutorial_py_matcher.html
@@ -13,9 +14,15 @@ import cv2
 # First keypoint designates coordinates on the first image.
 # Second one designates the same feature on the second image.
 def get_matches(filename1, filename2, visualize=True, lowe_ratio=0.6):
-    # Read images from files, convert to greyscale
-    img1 = cv2.imread(filename1, cv2.IMREAD_GRAYSCALE)
-    img2 = cv2.imread(filename2, cv2.IMREAD_GRAYSCALE)
+    assert type(filename1) == type(filename2)
+
+    if isinstance(filename1, str):
+        # Read images from files, convert to greyscale
+        img1 = cv2.imread(filename1, cv2.IMREAD_GRAYSCALE)
+        img2 = cv2.imread(filename2, cv2.IMREAD_GRAYSCALE)
+    elif isinstance(filename1, np.ndarray):
+        img1 = cv2.cvtColor(filename1, cv2.COLOR_BGR2GRAY)
+        img2 = cv2.cvtColor(filename2, cv2.COLOR_BGR2GRAY)
 
     # Find the keypoints and descriptors with SIFT
     sift = cv2.SIFT_create()

@@ -1,6 +1,6 @@
-from task3_proto import find_homography
-from task2_proto import transform_image, compute_bounds_and_offset
-from task5_proto import compute_blending_weights
+from .task3_proto import find_homography
+from .task2_proto import transform_image, compute_bounds_and_offset
+from .task5_proto import compute_blending_weights
 
 from typing import Tuple
 
