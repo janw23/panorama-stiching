@@ -41,7 +41,7 @@ def find_homography(source_points: np.ndarray, target_points: np.ndarray) -> np.
     return homography.reshape(3, 3)
 
 
-def find_homography_ransac(source_points: np.ndarray, target_points: np.ndarray, num_iterations: int, threshold: float) -> Union[np.ndarray, None]:
+def find_homography_ransac(source_points: np.ndarray, target_points: np.ndarray, num_iterations: int, threshold: float, min_inliers_count = 30) -> Union[np.ndarray, None]:
     ''' Finds homography which transforms one list of points to another.
         Points are assumed to be 2d and in image-like coordinates.
         Thanks to RANSAC, this method is more robust to outliers than a simple find_homography() .'''
@@ -78,7 +78,7 @@ def find_homography_ransac(source_points: np.ndarray, target_points: np.ndarray,
             best_inliers_count = inliers_count
             best_inliers = np.copy(inliers_mask)
 
-    if best_inliers is None or len(best_inliers) < 30:
+    if best_inliers is None or len(best_inliers) < min_inliers_count:
         return None
 
     homography = find_homography(
