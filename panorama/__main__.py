@@ -1,25 +1,23 @@
 import argparse
 from pathlib import Path
+import sys
 
-parser = argparse.ArgumentParser()
-parser.add_argument('action', choices=['undistort', 'stich'])
+assert len(sys.argv) > 2
 
-# undistort
-parser.add_argument('-i', '--image-path', type=Path)
-parser.add_argument('-m', '--matrix-path', type=Path)
-parser.add_argument('-d', '--distortion-coeffs-path', type=Path)
-parser.add_argument('-o', '--output-path', type=Path)
+action = sys.argv[1]
+argv = sys.argv[2:]
 
-# stich
-parser.add_argument('img1', type=Path)
-parser.add_argument('img2', type=Path)
-
-args = parser.parse_args()
-
-if args.action == 'undistort':
-    from camera import CameraInfo
+if action == 'undistort':
+    from .camera import CameraInfo
     import numpy as np
     import cv2
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', '--image-path', type=Path)
+    parser.add_argument('-m', '--matrix-path', type=Path)
+    parser.add_argument('-d', '--distortion-coeffs-path', type=Path)
+    parser.add_argument('-o', '--output-path', type=Path)
+    args = parser.parse_args(argv)
 
     image = cv2.imread(str(args.image_path))
     camera_matrix = np.loadtxt(args.matrix_path)
@@ -31,9 +29,14 @@ if args.action == 'undistort':
     cv2.imwrite(str(args.output_path), image)
     print(f'Saved undistorted image to {args.output_path}')
 
-elif args.action == 'stich':
+elif action == 'stich':
     import cv2
     from .stich import stich_images_automatically
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('img1', type=Path)
+    parser.add_argument('img2', type=Path)
+    args = parser.parse_args(argv)
 
     img1 = cv2.imread(str(args.img1))
     img2 = cv2.imread(str(args.img2))
