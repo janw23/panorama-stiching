@@ -1,12 +1,14 @@
 from typing import Tuple
 
 import numpy as np
+import cv2
 
 from .utils import apply_homography, compute_bounds_and_offset
 
 
 def transform_image(image: np.ndarray, homography: np.ndarray) -> Tuple[np.ndarray, Tuple[int, int]]:
-    '''Transforms image using given homography.'''
+    ''' Transforms image using given homography.
+        Returns transformed image and its translation relative to provided image. '''
     assert homography.shape == (3, 3)
     np.swapaxes(image, 0, 1)  # transform image into matrix-like coordinates
 
