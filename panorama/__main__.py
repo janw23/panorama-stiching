@@ -36,6 +36,7 @@ elif action == 'stich':
     parser = argparse.ArgumentParser()
     parser.add_argument('img1', type=Path)
     parser.add_argument('img2', type=Path)
+    parser.add_argument('-o', '--output-path', type=Path, required=False)
     args = parser.parse_args(argv)
 
     img1 = cv2.imread(str(args.img1))
@@ -44,9 +45,14 @@ elif action == 'stich':
     stiched = stich_images_automatically(img1, img2)
     if stiched is None:
         print('Could not stich images')
+    else:
+        if args.output_path is not None:
+            cv2.imwrite(str(args.output_path), stiched)
+            print(f'Saved stiched panorama to {args.output_path}')
 
-    cv2.imshow('stiched', stiched)
-    cv2.waitKey(0)
+        cv2.imshow('stiched', stiched)
+        cv2.waitKey(0)
+
 
 else:
     raise RuntimeError("Unknown action")
